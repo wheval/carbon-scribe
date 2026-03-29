@@ -149,7 +149,16 @@ export class AnalyticsService {
    * Calculate percentile rank
    */
   calculatePercentileRank(value: number, allValues: number[]): number {
+    if (allValues.length === 0) return 0;
+    
     const sorted = [...allValues].sort((a, b) => a - b);
+    
+    // Special case: if value is the minimum, return 0
+    if (value <= sorted[0]) {
+      return 0;
+    }
+    
+    // Use standard percentile rank: (count <= value) / total * 100
     const count = sorted.filter((v) => v <= value).length;
     return (count / sorted.length) * 100;
   }
