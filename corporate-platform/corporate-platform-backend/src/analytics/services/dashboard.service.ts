@@ -21,7 +21,10 @@ export class DashboardService {
   /**
    * Get advanced dashboard overview
    */
-  async getOverview(companyId: string, period: string = 'MONTHLY'): Promise<DashboardOverview> {
+  async getOverview(
+    companyId: string,
+    period: string = 'MONTHLY',
+  ): Promise<DashboardOverview> {
     const cacheKey = `dashboard:overview:${companyId}:${period}`;
     const cached = await this.cache.get(cacheKey);
 
@@ -29,14 +32,15 @@ export class DashboardService {
       return JSON.parse(cached);
     }
 
-    const [projects, retirements, credits, topRegions, topTypes, activities] = await Promise.all([
-      this.getProjectsMetrics(companyId),
-      this.getRetirementsMetrics(companyId),
-      this.getCreditsMetrics(companyId),
-      this.getTopRegions(companyId),
-      this.getTopProjectTypes(companyId),
-      this.getRecentActivity(companyId),
-    ]);
+    const [projects, retirements, credits, topRegions, topTypes, activities] =
+      await Promise.all([
+        this.getProjectsMetrics(companyId),
+        this.getRetirementsMetrics(companyId),
+        this.getCreditsMetrics(companyId),
+        this.getTopRegions(companyId),
+        this.getTopProjectTypes(companyId),
+        this.getRecentActivity(companyId),
+      ]);
 
     const overview: DashboardOverview = {
       totalProjects: projects.total,
@@ -46,7 +50,8 @@ export class DashboardService {
       averageQualityScore: credits.avgQuality,
       monthlyRetirementTarget: retirements.target,
       monthlyRetirementProgress: retirements.progress,
-      retirementProgressPercentage: (retirements.progress / retirements.target) * 100,
+      retirementProgressPercentage:
+        (retirements.progress / retirements.target) * 100,
       topRegions,
       topProjectTypes: topTypes,
       recentActivity: activities,
@@ -132,7 +137,8 @@ export class DashboardService {
       .filter((c) => c.dynamicScore > 0)
       .map((c) => c.dynamicScore);
 
-    const avgQuality = scores.length > 0 ? scores.reduce((a, b) => a + b) / scores.length : 0;
+    const avgQuality =
+      scores.length > 0 ? scores.reduce((a, b) => a + b) / scores.length : 0;
 
     return {
       available: credits
@@ -229,7 +235,7 @@ export class DashboardService {
       metric: 'retirement_amount',
       value: values[idx],
       expectedValue: values.reduce((a, b) => a + b) / values.length,
-      deviance: values[idx] - (values.reduce((a, b) => a + b) / values.length),
+      deviance: values[idx] - values.reduce((a, b) => a + b) / values.length,
       date: retirements[idx].retiredAt,
       severity: 'medium',
     }));

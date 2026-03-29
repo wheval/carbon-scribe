@@ -184,7 +184,9 @@ export class RegionalService {
     }
 
     const mean = sorted.reduce((a, b) => a + b, 0) / sorted.length;
-    const gini = (2 * sum) / (sorted.length * sorted.length * mean) - (sorted.length + 1) / sorted.length;
+    const gini =
+      (2 * sum) / (sorted.length * sorted.length * mean) -
+      (sorted.length + 1) / sorted.length;
 
     return Math.max(0, Math.min(1, gini));
   }

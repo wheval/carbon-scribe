@@ -165,7 +165,13 @@ describe('AnalyticsService', () => {
       const mockData = { value: 100 };
       const date = new Date();
 
-      await service.cacheMetrics('DASHBOARD', 'MONTHLY', date, mockData, 'company1');
+      await service.cacheMetrics(
+        'DASHBOARD',
+        'MONTHLY',
+        date,
+        mockData,
+        'company1',
+      );
 
       expect(cache.set).toHaveBeenCalled();
       expect(prisma.analyticsCache.create).toHaveBeenCalled();
@@ -174,7 +180,9 @@ describe('AnalyticsService', () => {
 
   describe('cleanupExpiredCache', () => {
     it('should delete expired cache entries', async () => {
-      jest.spyOn(prisma.analyticsCache, 'deleteMany').mockResolvedValue({ count: 5 });
+      jest
+        .spyOn(prisma.analyticsCache, 'deleteMany')
+        .mockResolvedValue({ count: 5 });
 
       await service.cleanupExpiredCache();
 

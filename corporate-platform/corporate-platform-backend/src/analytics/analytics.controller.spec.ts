@@ -9,6 +9,8 @@ import { RegionalService } from './services/regional.service';
 import { TeamPerformanceService } from './services/team-performance.service';
 import { TimelineService } from './services/timeline.service';
 import { JwtPayload } from '../auth/interfaces/jwt-payload.interface';
+import { Reflector } from '@nestjs/core';
+import { RbacService } from '../rbac/rbac.service';
 
 describe('AnalyticsController', () => {
   let controller: AnalyticsController;
@@ -157,13 +159,22 @@ describe('AnalyticsController', () => {
           provide: TimelineService,
           useValue: mockServices.TimelineService,
         },
+        {
+          provide: Reflector,
+          useValue: { get: jest.fn() },
+        },
+        {
+          provide: RbacService,
+          useValue: { checkPermissions: jest.fn().mockResolvedValue(true) },
+        },
       ],
     }).compile();
 
     controller = module.get<AnalyticsController>(AnalyticsController);
     dashboardService = module.get<DashboardService>(DashboardService);
     predictiveService = module.get<PredictiveService>(PredictiveService);
-    creditQualityService = module.get<CreditQualityService>(CreditQualityService);
+    creditQualityService =
+      module.get<CreditQualityService>(CreditQualityService);
     projectComparisonService = module.get<ProjectComparisonService>(
       ProjectComparisonService,
     );
@@ -189,7 +200,9 @@ describe('AnalyticsController', () => {
     it('should return dashboard insights', async () => {
       const result = await controller.getDashboardInsights(mockUser);
       expect(result).toBeDefined();
-      expect(dashboardService.getInsights).toHaveBeenCalledWith(mockUser.companyId);
+      expect(dashboardService.getInsights).toHaveBeenCalledWith(
+        mockUser.companyId,
+      );
     });
   });
 
@@ -205,9 +218,7 @@ describe('AnalyticsController', () => {
     });
 
     it('should reject invalid months parameter', async () => {
-      expect(() =>
-        controller.predictRetirements(mockUser, '200'),
-      ).toThrow();
+      expect(() => controller.predictRetirements(mockUser, '200')).toThrow();
     });
   });
 
@@ -247,7 +258,10 @@ describe('AnalyticsController', () => {
 
   describe('getQualityBenchmarks', () => {
     it('should get quality benchmarks', async () => {
-      const result = await controller.getQualityBenchmarks('forestry', 'Africa');
+      const result = await controller.getQualityBenchmarks(
+        'forestry',
+        'Africa',
+      );
       expect(result).toBeDefined();
     });
   });

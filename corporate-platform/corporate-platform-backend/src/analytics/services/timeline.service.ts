@@ -43,7 +43,10 @@ export class TimelineService {
           new Date(r.retiredAt) <= monthEnd,
       );
 
-      const monthlyAmount = monthRetirements.reduce((sum, r) => sum + r.amount, 0);
+      const monthlyAmount = monthRetirements.reduce(
+        (sum, r) => sum + r.amount,
+        0,
+      );
       cumulative += monthlyAmount;
 
       timeline.push({
@@ -57,8 +60,7 @@ export class TimelineService {
     const result = {
       data: timeline,
       currentTotal: cumulative,
-      monthlyAverage:
-        cumulative / months,
+      monthlyAverage: cumulative / months,
       accelerationFactor: this.calculateAcceleration(timeline),
     };
 
@@ -69,10 +71,7 @@ export class TimelineService {
   /**
    * Get future reduction scenarios
    */
-  async getReductionProjections(
-    companyId: string,
-    months: number = 36,
-  ) {
+  async getReductionProjections(companyId: string, months: number = 36) {
     const cacheKey = `timeline:projections:${companyId}`;
     const cached = await this.cache.get(cacheKey);
 
@@ -81,9 +80,10 @@ export class TimelineService {
     }
 
     const historicalData = await this.getHistoricalReductions(companyId, 24);
-    const baseline = historicalData.length > 0
-      ? historicalData.reduce((sum, d) => sum + d, 0) / historicalData.length
-      : 0;
+    const baseline =
+      historicalData.length > 0
+        ? historicalData.reduce((sum, d) => sum + d, 0) / historicalData.length
+        : 0;
 
     const scenarios = {
       optimistic: this.generateProjection(baseline * 1.3, months),
@@ -176,7 +176,9 @@ export class TimelineService {
     }
 
     const result = {
-      milestones: milestones.sort((a, b) => a.date.getTime() - b.date.getTime()),
+      milestones: milestones.sort(
+        (a, b) => a.date.getTime() - b.date.getTime(),
+      ),
       netZeroTarget: company.netZeroTarget,
       netZeroYear: company.netZeroTargetYear,
       parisAgreementCompliant: this.checkParisCompliance(company),
@@ -215,23 +217,17 @@ export class TimelineService {
     return data;
   }
 
-  private generateProjection(
-    baselineMonthly: number,
-    months: number,
-  ) {
+  private generateProjection(baselineMonthly: number, months: number) {
     const projection = [];
     let cumulative = 0;
 
     for (let i = 1; i <= months; i++) {
       const monthlyValue =
-        baselineMonthly +
-        (Math.random() - 0.5) * baselineMonthly * 0.2;
+        baselineMonthly + (Math.random() - 0.5) * baselineMonthly * 0.2;
       cumulative += monthlyValue;
 
       projection.push({
-        date: new Date(
-          Date.now() + i * 30 * 24 * 60 * 60 * 1000,
-        ),
+        date: new Date(Date.now() + i * 30 * 24 * 60 * 60 * 1000),
         monthlyProjection: Math.max(0, monthlyValue),
         cumulativeProjection: Math.max(0, cumulative),
       });

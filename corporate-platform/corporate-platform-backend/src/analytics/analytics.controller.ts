@@ -69,7 +69,10 @@ export class AnalyticsController {
     if (monthsNum <= 0 || monthsNum > 120) {
       throw new BadRequestException('Months must be between 1 and 120');
     }
-    return this.predictiveService.forecastRetirements(user.companyId, monthsNum);
+    return this.predictiveService.forecastRetirements(
+      user.companyId,
+      monthsNum,
+    );
   }
 
   @Get('predictive/impact')
@@ -197,7 +200,10 @@ export class AnalyticsController {
     if (limitNum <= 0 || limitNum > 50) {
       throw new BadRequestException('Limit must be between 1 and 50');
     }
-    return this.projectComparisonService.findSimilarProjects(projectId, limitNum);
+    return this.projectComparisonService.findSimilarProjects(
+      projectId,
+      limitNum,
+    );
   }
 
   @Get('projects/outliers')
@@ -208,7 +214,9 @@ export class AnalyticsController {
   ) {
     const validMetrics = ['quality', 'volume', 'availability'];
     if (!validMetrics.includes(metric)) {
-      throw new BadRequestException(`Metric must be one of: ${validMetrics.join(', ')}`);
+      throw new BadRequestException(
+        `Metric must be one of: ${validMetrics.join(', ')}`,
+      );
     }
     return this.projectComparisonService.findOutliers(user.companyId, metric);
   }

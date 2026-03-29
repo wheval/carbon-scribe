@@ -43,7 +43,9 @@ export class ProjectComparisonService {
       metrics: {
         creditValue: p.availableCredits,
         qualityScore: p.avgScore || 0,
-        verificationRatio: p.credits.filter((c) => c.verificationScore > 70).length / p.credits.length || 0,
+        verificationRatio:
+          p.credits.filter((c) => c.verificationScore > 70).length /
+            p.credits.length || 0,
       },
     }));
 
@@ -54,10 +56,7 @@ export class ProjectComparisonService {
   /**
    * Find similar projects for benchmarking
    */
-  async findSimilarProjects(
-    projectId: string,
-    limit: number = 5,
-  ) {
+  async findSimilarProjects(projectId: string, limit: number = 5) {
     const cacheKey = `comp:similar:${projectId}`;
     const cached = await this.cache.get(cacheKey);
 
@@ -76,10 +75,7 @@ export class ProjectComparisonService {
 
     const allProjects = await this.prisma.project.findMany({
       where: {
-        AND: [
-          { id: { not: projectId } },
-          { type: project.type },
-        ],
+        AND: [{ id: { not: projectId } }, { type: project.type }],
       },
       include: { credits: true },
     });
@@ -160,10 +156,9 @@ export class ProjectComparisonService {
     if (project1.region === project2.region) similarity += 0.3;
 
     // Similar size
-    const sizeRatio = Math.min(
-      project1.totalCredits,
-      project2.totalCredits,
-    ) / Math.max(project1.totalCredits, project2.totalCredits);
+    const sizeRatio =
+      Math.min(project1.totalCredits, project2.totalCredits) /
+      Math.max(project1.totalCredits, project2.totalCredits);
     similarity += sizeRatio * 0.2;
 
     // Similar quality

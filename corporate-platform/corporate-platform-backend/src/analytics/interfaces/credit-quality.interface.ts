@@ -9,7 +9,13 @@ export interface QualityRadarData {
 }
 
 export interface QualityDimension {
-  name: 'permanence' | 'additionality' | 'verification' | 'leakage' | 'cobenefits' | 'transparency';
+  name:
+    | 'permanence'
+    | 'additionality'
+    | 'verification'
+    | 'leakage'
+    | 'cobenefits'
+    | 'transparency';
   score: number; // 0-100
   weight: number; // 0-1
   description: string;

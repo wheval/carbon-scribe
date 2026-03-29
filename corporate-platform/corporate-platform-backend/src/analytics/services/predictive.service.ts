@@ -41,7 +41,10 @@ export class PredictiveService {
       confidence: 0.85,
       methodology: 'ARIMA with seasonal decomposition',
       lastUpdated: new Date(),
-      projectedRetirements: forecast.reduce((sum, f) => sum + f.predictedValue, 0),
+      projectedRetirements: forecast.reduce(
+        (sum, f) => sum + f.predictedValue,
+        0,
+      ),
       seasonalPattern,
     };
 
@@ -71,8 +74,12 @@ export class PredictiveService {
       confidence: 0.8,
       methodology: 'Time-series forecasting with trend analysis',
       lastUpdated: new Date(),
-      projectedCarbonReduction: forecast.reduce((sum, f) => sum + f.predictedValue, 0),
-      projectedCost: forecast.reduce((sum, f) => sum + f.predictedValue, 0) * 25, // Estimate
+      projectedCarbonReduction: forecast.reduce(
+        (sum, f) => sum + f.predictedValue,
+        0,
+      ),
+      projectedCost:
+        forecast.reduce((sum, f) => sum + f.predictedValue, 0) * 25, // Estimate
       roi: 3.5, // Return on investment ratio
     };
 
@@ -91,7 +98,11 @@ export class PredictiveService {
       return JSON.parse(cached);
     }
 
-    const metrics = ['retirement_volume', 'avg_quality_score', 'regional_concentration'];
+    const metrics = [
+      'retirement_volume',
+      'avg_quality_score',
+      'regional_concentration',
+    ];
     const trends: TrendDetection[] = [];
 
     for (const metric of metrics) {
@@ -122,7 +133,8 @@ export class PredictiveService {
 
       const monthlyRetirements = retirements.filter(
         (r) =>
-          new Date(r.retiredAt) >= monthStart && new Date(r.retiredAt) <= monthEnd,
+          new Date(r.retiredAt) >= monthStart &&
+          new Date(r.retiredAt) <= monthEnd,
       );
 
       const total = monthlyRetirements.reduce((sum, r) => sum + r.amount, 0);
@@ -173,10 +185,7 @@ export class PredictiveService {
     return data;
   }
 
-  private generateForecast(
-    historicalData: number[],
-    months: number,
-  ) {
+  private generateForecast(historicalData: number[], months: number) {
     const forecast = [];
     const mean = historicalData.reduce((a, b) => a + b) / historicalData.length;
     const trend =
@@ -184,7 +193,8 @@ export class PredictiveService {
       historicalData.length;
 
     for (let i = 1; i <= months; i++) {
-      const predictedValue = mean + trend * i + (Math.random() - 0.5) * mean * 0.1;
+      const predictedValue =
+        mean + trend * i + (Math.random() - 0.5) * mean * 0.1;
 
       forecast.push({
         date: new Date(Date.now() + i * 30 * 24 * 60 * 60 * 1000),
@@ -233,7 +243,12 @@ export class PredictiveService {
     const meanFirst = firstHalf.reduce((a, b) => a + b) / firstHalf.length;
     const meanSecond = secondHalf.reduce((a, b) => a + b) / secondHalf.length;
 
-    const trend = meanSecond > meanFirst ? ('increasing' as const) : meanSecond < meanFirst ? ('decreasing' as const) : ('stable' as const);
+    const trend =
+      meanSecond > meanFirst
+        ? ('increasing' as const)
+        : meanSecond < meanFirst
+          ? ('decreasing' as const)
+          : ('stable' as const);
 
     const strength = Math.abs(meanSecond - meanFirst) / meanFirst;
 

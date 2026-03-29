@@ -22,7 +22,7 @@ export class AnalyticsService {
     companyId?: string,
   ) {
     const cacheKey = this.buildCacheKey(metricType, period, date, companyId);
-    
+
     // Try to get from Redis first
     const cached = await this.cache.get(cacheKey);
     if (cached && typeof cached === 'string') {
@@ -44,7 +44,7 @@ export class AnalyticsService {
     ttlMinutes: number = 60,
   ) {
     const cacheKey = this.buildCacheKey(metricType, period, date, companyId);
-    
+
     // Cache in Redis
     await this.cache.set(cacheKey, JSON.stringify(data), ttlMinutes * 60);
 
@@ -100,7 +100,9 @@ export class AnalyticsService {
     return {
       startDate: start,
       endDate: end,
-      days: Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)),
+      days: Math.floor(
+        (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24),
+      ),
     };
   }
 
@@ -148,8 +150,8 @@ export class AnalyticsService {
    */
   calculatePercentileRank(value: number, allValues: number[]): number {
     const sorted = [...allValues].sort((a, b) => a - b);
-    const index = sorted.findIndex((v) => v >= value);
-    return (index / sorted.length) * 100;
+    const count = sorted.filter((v) => v <= value).length;
+    return (count / sorted.length) * 100;
   }
 
   /**
@@ -162,7 +164,8 @@ export class AnalyticsService {
     if (data.length < 2) return [];
 
     const mean = data.reduce((a, b) => a + b) / data.length;
-    const variance = data.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / data.length;
+    const variance =
+      data.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / data.length;
     const stdDev = Math.sqrt(variance);
 
     return data

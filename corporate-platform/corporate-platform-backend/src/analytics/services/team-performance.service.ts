@@ -45,9 +45,11 @@ export class TeamPerformanceService {
       const devData = developerMap.get(developer);
       devData.projectCount++;
       devData.totalCredits += project.availableCredits;
-      devData.portfolioValue += project.availableCredits * (project.avgScore || 0) / 100;
+      devData.portfolioValue +=
+        (project.availableCredits * (project.avgScore || 0)) / 100;
       devData.avgQualityScore =
-        (devData.avgQualityScore + (project.avgScore || 0)) / devData.projectCount;
+        (devData.avgQualityScore + (project.avgScore || 0)) /
+        devData.projectCount;
     });
 
     const result = Array.from(developerMap.values());
@@ -109,13 +111,19 @@ export class TeamPerformanceService {
     });
 
     const portfolio = {
-      developerCount: developerId ? 1 : new Set(projects.map((p) => p.developer)).size,
+      developerCount: developerId
+        ? 1
+        : new Set(projects.map((p) => p.developer)).size,
       projectCount: projects.length,
       totalCredits: projects.reduce((sum, p) => sum + p.totalCredits, 0),
-      availableCredits: projects.reduce((sum, p) => sum + p.availableCredits, 0),
+      availableCredits: projects.reduce(
+        (sum, p) => sum + p.availableCredits,
+        0,
+      ),
       avgQualityScore:
         projects.length > 0
-          ? projects.reduce((sum, p) => sum + (p.avgScore || 0), 0) / projects.length
+          ? projects.reduce((sum, p) => sum + (p.avgScore || 0), 0) /
+            projects.length
           : 0,
       projects: projects.map((p) => ({
         projectId: p.id,

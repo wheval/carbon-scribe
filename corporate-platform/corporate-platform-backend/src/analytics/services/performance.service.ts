@@ -78,7 +78,8 @@ export class PerformanceService {
     let totalValue = 0;
 
     projects.forEach((project) => {
-      const dimValue = dimension === 'projectType' ? project.type : project.region;
+      const dimValue =
+        dimension === 'projectType' ? project.type : project.region;
       const value = project.credits.reduce((sum, c) => sum + c.totalAmount, 0);
 
       if (dimValue) {

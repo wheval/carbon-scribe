@@ -39,7 +39,14 @@ export class CreditQualityService {
     }
 
     const credits = project.credits;
-    const dimensionDefs: Array<'permanence' | 'additionality' | 'verification' | 'leakage' | 'cobenefits' | 'transparency'> = [
+    const dimensionDefs: Array<
+      | 'permanence'
+      | 'additionality'
+      | 'verification'
+      | 'leakage'
+      | 'cobenefits'
+      | 'transparency'
+    > = [
       'permanence',
       'additionality',
       'verification',
@@ -78,7 +85,9 @@ export class CreditQualityService {
   /**
    * Get portfolio-wide quality scores
    */
-  async getPortfolioQuality(companyId: string): Promise<PortfolioQualityScore[]> {
+  async getPortfolioQuality(
+    companyId: string,
+  ): Promise<PortfolioQualityScore[]> {
     const cacheKey = `quality:portfolio:${companyId}`;
     const cached = await this.cache.get(cacheKey);
 
@@ -109,8 +118,12 @@ export class CreditQualityService {
         projectCount: credits.length,
         qualityDistribution: {
           excellent: credits.filter((c) => c.dynamicScore >= 80).length,
-          good: credits.filter((c) => c.dynamicScore >= 60 && c.dynamicScore < 80).length,
-          fair: credits.filter((c) => c.dynamicScore >= 40 && c.dynamicScore < 60).length,
+          good: credits.filter(
+            (c) => c.dynamicScore >= 60 && c.dynamicScore < 80,
+          ).length,
+          fair: credits.filter(
+            (c) => c.dynamicScore >= 40 && c.dynamicScore < 60,
+          ).length,
           poor: credits.filter((c) => c.dynamicScore < 40).length,
         },
       };
@@ -123,7 +136,10 @@ export class CreditQualityService {
   /**
    * Get industry benchmarks
    */
-  async getBenchmarks(industry?: string, region?: string): Promise<IndustryBenchmark> {
+  async getBenchmarks(
+    industry?: string,
+    region?: string,
+  ): Promise<IndustryBenchmark> {
     const cacheKey = `quality:benchmark:${industry}:${region || 'global'}`;
     const cached = await this.cache.get(cacheKey);
 
@@ -142,8 +158,7 @@ export class CreditQualityService {
     const benchmark: IndustryBenchmark = {
       industry: industry || 'All',
       region: region || 'Global',
-      averageScore:
-        scores.reduce((a, b) => a + b, 0) / scores.length || 0,
+      averageScore: scores.reduce((a, b) => a + b, 0) / scores.length || 0,
       medianScore: scores[Math.floor(scores.length / 2)] || 0,
       percentile: {
         p10: scores[Math.floor(scores.length * 0.1)] || 0,
@@ -159,15 +174,14 @@ export class CreditQualityService {
     return benchmark;
   }
 
-  private calculateScore(
-    credits: any[],
-    scoreField: string,
-  ): number {
+  private calculateScore(credits: any[], scoreField: string): number {
     if (credits.length === 0) return 0;
     const scores = credits
       .filter((c) => c[scoreField] > 0)
       .map((c) => c[scoreField]);
-    return scores.length > 0 ? scores.reduce((a, b) => a + b) / scores.length : 0;
+    return scores.length > 0
+      ? scores.reduce((a, b) => a + b) / scores.length
+      : 0;
   }
 
   private identifyRiskFactors(credits: any[]) {
@@ -194,8 +208,10 @@ export class CreditQualityService {
     ).map((c) => c.dynamicScore);
 
     const projectAvgScore =
-      (project.credits || []).reduce((sum: number, c: any) => sum + c.dynamicScore, 0) /
-      (project.credits?.length || 1);
+      (project.credits || []).reduce(
+        (sum: number, c: any) => sum + c.dynamicScore,
+        0,
+      ) / (project.credits?.length || 1);
 
     return {
       projectScore: projectAvgScore,
