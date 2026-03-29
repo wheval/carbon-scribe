@@ -218,7 +218,9 @@ describe('AnalyticsController', () => {
     });
 
     it('should reject invalid months parameter', async () => {
-      expect(() => controller.predictRetirements(mockUser, '200')).toThrow();
+      await expect(controller.predictRetirements(mockUser, '200')).rejects.toThrow(
+        'Months must be between 1 and 120',
+      );
     });
   });
 
@@ -277,9 +279,9 @@ describe('AnalyticsController', () => {
     });
 
     it('should reject missing dates', async () => {
-      expect(() =>
+      await expect(
         controller.getPerformanceOverTime(mockUser, {} as any),
-      ).toThrow();
+      ).rejects.toThrow('startDate and endDate are required');
     });
   });
 
@@ -309,7 +311,9 @@ describe('AnalyticsController', () => {
     });
 
     it('should reject missing projectIds', async () => {
-      expect(() => controller.compareProjects(mockUser, '')).toThrow();
+      await expect(controller.compareProjects(mockUser, '')).rejects.toThrow(
+        'projectIds query parameter is required',
+      );
     });
   });
 
@@ -327,7 +331,9 @@ describe('AnalyticsController', () => {
     });
 
     it('should reject invalid metric', async () => {
-      expect(() => controller.getOutliers(mockUser, 'invalid')).toThrow();
+      await expect(controller.getOutliers(mockUser, 'invalid')).rejects.toThrow(
+        /Metric must be one of:/,
+      );
     });
   });
 
