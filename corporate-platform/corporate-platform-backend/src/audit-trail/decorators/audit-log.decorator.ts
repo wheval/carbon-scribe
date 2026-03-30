@@ -1,4 +1,7 @@
-import { AuditAction, AuditEventType } from '../interfaces/audit-event.interface';
+import {
+  AuditAction,
+  AuditEventType,
+} from '../interfaces/audit-event.interface';
 
 export interface AuditLogDecoratorOptions {
   eventType: AuditEventType | string;

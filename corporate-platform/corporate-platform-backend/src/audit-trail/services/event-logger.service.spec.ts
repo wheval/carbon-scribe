@@ -121,6 +121,8 @@ describe('EventLoggerService', () => {
       },
     };
 
-    expect(service.serializeState(stateA)).toEqual(service.serializeState(stateB));
+    expect(service.serializeState(stateA)).toEqual(
+      service.serializeState(stateB),
+    );
   });
 });

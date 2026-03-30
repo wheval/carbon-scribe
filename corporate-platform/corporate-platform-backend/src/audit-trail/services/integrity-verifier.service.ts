@@ -70,7 +70,9 @@ export class IntegrityVerifierService {
 
     return {
       valid: checks.every((check) => check.valid),
-      invalidRecords: checks.filter((check) => !check.valid).map((check) => check.eventId),
+      invalidRecords: checks
+        .filter((check) => !check.valid)
+        .map((check) => check.eventId),
     };
   }
 

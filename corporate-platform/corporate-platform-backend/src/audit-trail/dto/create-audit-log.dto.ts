@@ -1,5 +1,8 @@
 import { IsEnum, IsObject, IsOptional, IsString } from 'class-validator';
-import { AuditAction, AuditEventType } from '../interfaces/audit-event.interface';
+import {
+  AuditAction,
+  AuditEventType,
+} from '../interfaces/audit-event.interface';
 
 export class CreateAuditLogDto {
   @IsEnum(AuditEventType)

@@ -75,7 +75,8 @@ export class AuditTrailService {
     query: QueryAuditLogsDto,
   ): Promise<AuditQueryResult<AuditEvent>> {
     const page = query.page && query.page > 0 ? query.page : 1;
-    const limit = query.limit && query.limit > 0 ? Math.min(query.limit, 1000) : 20;
+    const limit =
+      query.limit && query.limit > 0 ? Math.min(query.limit, 1000) : 20;
     const skip = (page - 1) * limit;
 
     const where: any = {
@@ -126,7 +127,11 @@ export class AuditTrailService {
     return event;
   }
 
-  async getEntityTrail(companyId: string, entityType: string, entityId: string) {
+  async getEntityTrail(
+    companyId: string,
+    entityType: string,
+    entityId: string,
+  ) {
     return this.prisma.auditEvent.findMany({
       where: {
         companyId,
@@ -157,7 +162,8 @@ export class AuditTrailService {
     const exportQuery: QueryAuditLogsDto = {
       ...query,
       page: 1,
-      limit: query.limit && query.limit > 0 ? Math.min(query.limit, 100000) : 100000,
+      limit:
+        query.limit && query.limit > 0 ? Math.min(query.limit, 100000) : 100000,
     };
 
     return this.queryEvents(companyId, exportQuery);

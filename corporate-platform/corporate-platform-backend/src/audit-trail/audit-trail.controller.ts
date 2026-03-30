@@ -59,7 +59,10 @@ export class AuditTrailController {
     @CurrentUser() user: JwtPayload,
     @Body() body: VerifyIntegrityDto,
   ) {
-    return this.auditTrailService.verifyBatchIntegrity(user.companyId, body.ids);
+    return this.auditTrailService.verifyBatchIntegrity(
+      user.companyId,
+      body.ids,
+    );
   }
 
   @Get('chain/integrity')
@@ -79,7 +82,10 @@ export class AuditTrailController {
     @Res() res: Response,
   ) {
     const format = (query.format || 'csv').toLowerCase();
-    const result = await this.auditTrailService.exportEvents(user.companyId, query);
+    const result = await this.auditTrailService.exportEvents(
+      user.companyId,
+      query,
+    );
 
     if (format === 'json') {
       res.setHeader('Content-Type', 'application/json');

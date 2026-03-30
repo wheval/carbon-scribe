@@ -1,4 +1,10 @@
-import { ArrayMaxSize, ArrayMinSize, IsArray, IsOptional, IsString } from 'class-validator';
+import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsArray,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class VerifyIntegrityDto {
   @IsArray()

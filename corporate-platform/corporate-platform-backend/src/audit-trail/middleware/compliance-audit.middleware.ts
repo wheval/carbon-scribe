@@ -2,7 +2,10 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { JwtPayload } from '../../auth/interfaces/jwt-payload.interface';
 import { AuditTrailService } from '../audit-trail.service';
-import { AuditAction, AuditEventType } from '../interfaces/audit-event.interface';
+import {
+  AuditAction,
+  AuditEventType,
+} from '../interfaces/audit-event.interface';
 
 @Injectable()
 export class ComplianceAuditMiddleware implements NestMiddleware {

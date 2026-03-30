@@ -13,7 +13,10 @@ describe('IntegrityVerifierService', () => {
       recalculateHash: jest.fn(),
     };
 
-    const service = new IntegrityVerifierService(prisma as any, eventLogger as any);
+    const service = new IntegrityVerifierService(
+      prisma as any,
+      eventLogger as any,
+    );
 
     return {
       service,
